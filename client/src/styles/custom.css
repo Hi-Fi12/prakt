@@ -1,0 +1,36 @@
+:root {
+  --mint-color: #a1d6a1;
+  --mint-color-dark: #78c178;
+}
+
+.btn-outline-success {
+  color: var(--mint-color);
+  border-color: var(--mint-color);
+}
+
+.btn-outline-success:hover {
+  background-color: var(--mint-color);
+  border-color: var(--mint-color);
+}
+
+.btn-success {
+  background-color: var(--mint-color-dark);
+  border-color: var(--mint-color-dark);
+}
+
+.btn-success:hover {
+  background-color: var(--mint-color);
+  border-color: var(--mint-color);
+}
+
+@media (max-width: 992px) {
+  .navbar-collapse .d-flex {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .navbar-collapse .btn {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}
