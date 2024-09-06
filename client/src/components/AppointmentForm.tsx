@@ -3,7 +3,7 @@ import DoctorService, { Doctor } from '../services/DoctorService';
 import AppointmentService from '../services/AppointmentService';
 import UserService from '../services/UserService'; // Импортируйте UserService
 import { useNavigate } from 'react-router-dom';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AppointmentForm: React.FC = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const AppointmentForm: React.FC = () => {
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
     const [errors, setErrors] = useState<string[]>([]);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [userDetailsComplete, setUserDetailsComplete] = useState<boolean>(true); // Добавлено состояние для проверки данных пользователя
+    const [userDetailsComplete, setUserDetailsComplete] = useState<boolean>(true);
 
     useEffect(() => {
         async function fetchDoctors() {
@@ -37,17 +37,14 @@ const AppointmentForm: React.FC = () => {
                     setUserDetailsComplete(false);
                     return;
                 }
-        
+
                 const userDetails = await UserService.getUserDetails(userId);
-                console.log('userDetails:', userDetails);
-        
-                // Функция для проверки, что строка не пустая и не состоит только из пробелов
+
                 const isNotEmpty = (str: string | undefined | null) => {
                     return str !== null && str !== undefined && str.trim().length > 0;
                 };
-        
+
                 if (userDetails) {
-                    // Проверяем, что все обязательные поля заполнены
                     const {
                         activationLink,
                         address,
@@ -58,7 +55,7 @@ const AppointmentForm: React.FC = () => {
                         last_name,
                         phone_number
                     } = userDetails;
-        
+
                     const isComplete =
                         isNotEmpty(activationLink) &&
                         isNotEmpty(address) &&
@@ -68,7 +65,7 @@ const AppointmentForm: React.FC = () => {
                         isNotEmpty(gender) &&
                         isNotEmpty(last_name) &&
                         isNotEmpty(phone_number);
-        
+
                     setUserDetailsComplete(isComplete);
                 } else {
                     setUserDetailsComplete(false);
@@ -78,8 +75,6 @@ const AppointmentForm: React.FC = () => {
                 setUserDetailsComplete(false);
             }
         }
-        
-        
         checkUserDetails();
     }, []);
 
@@ -100,23 +95,15 @@ const AppointmentForm: React.FC = () => {
 
     const fetchAvailableTimes = async (doctorId: number, selectedDate: string) => {
         try {
-            console.log(`Запрос доступных времен для доктора ${doctorId} на дату ${selectedDate}`);
-            
             const response = await AppointmentService.getAppointmentsByDoctorAndDate(doctorId, selectedDate);
-            console.log('Полученные записи:', response.data);
-    
             const bookedTimes = response.data.map((appointment: { time: string }) => {
                 const [hours, minutes] = appointment.time.split(':');
                 return `${hours}:${minutes}`;
             });
-            console.log('Забронированные времена:', bookedTimes);
-    
+
             const allTimes = generateTimeSlots();
-            console.log('Все возможные времена:', allTimes);
-    
             const freeTimes = allTimes.filter(time => !bookedTimes.includes(time));
-            console.log('Свободные времена:', freeTimes);
-    
+
             setAvailableTimes(freeTimes);
         } catch (error) {
             console.error('Ошибка при проверке доступных времен:', error);
@@ -143,7 +130,7 @@ const AppointmentForm: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newErrors: string[] = [];
-    
+
         if (!userDetailsComplete) {
             newErrors.push('Пожалуйста, заполните все необходимые данные профиля перед записью на прием.');
         }
@@ -156,26 +143,26 @@ const AppointmentForm: React.FC = () => {
         if (!time) {
             newErrors.push('Выберите время.');
         }
-    
+
         if (newErrors.length > 0) {
             setErrors(newErrors);
             return;
         }
-    
+
         try {
             const patient_id = Number(localStorage.getItem('userId'));
             if (!patient_id) {
-                throw new Error('Пользователь не авторизованOLOLO');
+                throw new Error('Пользователь не авторизован');
             }
-    
-            const response = await AppointmentService.createAppointment(selectedDoctor!, date, time, patient_id);
-            console.log('Запись создана:', response.data);
+
+            await AppointmentService.createAppointment(selectedDoctor!, date, time, patient_id);
             setSuccessMessage('Запись успешно создана!');
             setErrors([]);
             setDate('');
             setTime('');
             setSelectedDoctor(undefined);
             setAvailableTimes([]);
+            window.location.reload();
         } catch (error) {
             console.error('Ошибка при создании записи:', error);
         }
@@ -192,69 +179,74 @@ const AppointmentForm: React.FC = () => {
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
     return (
-        <form onSubmit={handleSubmit}>
-            {errors.length > 0 && (
-                <div>
-                    {errors.map((error, index) => (
-                        <p key={index} style={{ color: 'red' }}>{error}</p>
-                    ))}
+        <div className="container mt-4">
+            <form onSubmit={handleSubmit}>
+                {errors.length > 0 && (
+                    <div className="alert alert-danger">
+                        {errors.map((error, index) => (
+                            <p key={index}>{error}</p>
+                        ))}
+                    </div>
+                )}
+                {successMessage && (
+                    <div className="alert alert-success">
+                        <p>{successMessage}</p>
+                    </div>
+                )}
+                <div className="mb-3">
+                    <label htmlFor="doctor" className="form-label">Выберите врача:</label>
+                    <select
+                        id="doctor"
+                        className="form-select"
+                        value={selectedDoctor ?? ''}
+                        onChange={(e) => {
+                            const doctorId = Number(e.target.value);
+                            setSelectedDoctor(doctorId);
+                            if (date) {
+                                fetchAvailableTimes(doctorId, date);
+                            }
+                        }}
+                    >
+                        <option value="">Выберите врача</option>
+                        {doctors.map((doctor) => (
+                            <option key={doctor.id} value={doctor.id}>
+                                {doctor.name} - {doctor.specialization}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-            )}
-            {successMessage && (
-                <div style={{ color: 'green' }}>
-                    <p>{successMessage}</p>
+                <div className="mb-3">
+                    <label htmlFor="date" className="form-label">Дата:</label>
+                    <input
+                        type="date"
+                        id="date"
+                        className="form-control"
+                        value={date}
+                        min={formatDate(minDate)}
+                        max={formatDate(maxDate)}
+                        onChange={handleDateChange}
+                    />
                 </div>
-            )}
-            <div>
-                <label htmlFor="doctor">Выберите врача:</label>
-                <select
-                    id="doctor"
-                    value={selectedDoctor ?? ''}
-                    onChange={(e) => {
-                        const doctorId = Number(e.target.value);
-                        setSelectedDoctor(doctorId);
-                        if (date) {
-                            fetchAvailableTimes(doctorId, date);
-                        }
-                    }}
-                >
-                    <option value="">Выберите врача</option>
-                    {doctors.map((doctor) => (
-                        <option key={doctor.id} value={doctor.id}>
-                            {doctor.name} - {doctor.specialization}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label htmlFor="date">Дата:</label>
-                <input
-                    type="date"
-                    id="date"
-                    value={date}
-                    min={formatDate(minDate)}
-                    max={formatDate(maxDate)}
-                    onChange={handleDateChange}
-                />
-            </div>
-            <div>
-                <label htmlFor="time">Время:</label>
-                <select
-                    id="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    disabled={availableTimes.length === 0}
-                >
-                    <option value="">Выберите время</option>
-                    {timeSlots.map((slot) => (
-                        <option key={slot} value={slot}>
-                            {slot}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <button type="submit">Создать запись</button>
-        </form>
+                <div className="mb-3">
+                    <label htmlFor="time" className="form-label">Время:</label>
+                    <select
+                        id="time"
+                        className="form-select"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        disabled={availableTimes.length === 0}
+                    >
+                        <option value="">Выберите время</option>
+                        {timeSlots.map((slot) => (
+                            <option key={slot} value={slot}>
+                                {slot}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <button type="submit" className="btn btn-primary">Создать запись</button>
+            </form>
+        </div>
     );
 };
 

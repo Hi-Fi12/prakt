@@ -1,5 +1,5 @@
-// src/components/DoctorPopup.tsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/DoctorPopup.module.css';
 
 interface DoctorPopupProps {
@@ -23,6 +23,12 @@ const DoctorPopup: React.FC<DoctorPopupProps> = ({
     isOpen,
     onClose,
 }) => {
+    const navigate = useNavigate();
+
+    const handleBookButtonClick = () => {
+        navigate('/dashboard'); // Замените '/dashboard' на путь к вашей странице
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -35,7 +41,7 @@ const DoctorPopup: React.FC<DoctorPopupProps> = ({
                 <p><strong>Стаж работы:</strong> {experience}</p>
                 <p><strong>Чем может помочь:</strong> {specialization}</p>
                 <button onClick={onClose} className={styles.closeButton}>Закрыть</button>
-                <button className={styles.bookButton}>Записаться</button>
+                <button className={styles.bookButton} onClick={handleBookButtonClick}>Записаться</button>
             </div>
         </div>
     );

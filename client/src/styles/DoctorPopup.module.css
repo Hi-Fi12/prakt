@@ -86,3 +86,7 @@
     background: #4caf50;
     color: #fff;
 }
+.closeButton {
+    /* Ваши стили для кнопки закрытия */
+    margin-right: 10px; /* Добавляет отступ между кнопками */
+}

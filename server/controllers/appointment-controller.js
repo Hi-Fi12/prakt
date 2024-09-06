@@ -144,7 +144,17 @@ async getAllById(req, res, next) {
             return res.status(500).json({ message: 'Ошибка на сервере' });
         }
     }
-    
+    async getAllAppointments(req, res, next) {
+        try {
+            //console.log('Получение списка пользователей');
+            const Appointments = await AppointmentService.getAllAppointments();
+            //console.log('Список пользователей получен:', users);
+            return res.json(Appointments)
+        } catch (error) {
+            console.error('Ошибка в getAllUsers:', error);
+            throw ApiError.InternalServerError('Ошибка сервера при получении списка пользователей');
+        }
+    }
 }
 
 module.exports = new AppointmentController();

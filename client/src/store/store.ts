@@ -7,7 +7,7 @@ import { AuthResponse } from "../models/response/AuthResponse";
 import { API_URL } from "../http";
 import { IAppointment } from "../models/IAppointment"; // Импортируйте модель записи
 import { AxiosError } from 'axios';
-//import UserService from "../services/UserService";
+import UserService from "../services/UserService";
 
 function isAxiosError(error: unknown): error is AxiosError {
     return (error as AxiosError).isAxiosError !== undefined;
@@ -45,6 +45,7 @@ export default class Store {
 
     setAdmin(bool: boolean) {
         this.isAdmin = bool;
+        //console.log('Администратор:', bool);
     }
 
     async login(email: string, password: string) {
@@ -53,7 +54,7 @@ export default class Store {
             localStorage.setItem('token', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
-           // await this.checkUserRole();
+            this.checkAdmin();
             return null;
         } catch (e: any) {
             if (e.response && e.response.data) {
@@ -70,7 +71,7 @@ export default class Store {
     async registration(email: string, password: string) {
         try {
             const response = await AuthService.registration(email, password);
-            //console.log('Регистрация успешна:', response);
+            ////console.log('Регистрация успешна:', response);
             localStorage.setItem('token', response.data.accessToken);
             return null; // Возвращаем null, если нет ошибки
         } catch (e: any) {
@@ -90,9 +91,9 @@ export default class Store {
             localStorage.removeItem('userId');
             this.setAuth(false);
             this.setUser({} as IUser);
-            this.setAdmin(false);
+            localStorage.removeItem('isAdmin');
         } catch (e) {
-            //console.log('Ошибка при выходе:', e);
+            ////console.log('Ошибка при выходе:', e);
         }
     }
 
@@ -106,6 +107,7 @@ export default class Store {
                 localStorage.setItem('token', response.data.accessToken);
                 this.setAuth(true);
                 this.setUser(response.data.user);
+                this.checkAdmin();
             } else {
                 this.setAuth(false);
             }
@@ -149,6 +151,19 @@ export default class Store {
             this.setAppointments([...this.appointments, response.data]);
         } catch (e) {
             console.error('Ошибка при создании записи:', e);
+        }
+    }
+
+    async checkAdmin() {  
+        //console.log('Проверка администратора...');
+        const user = await UserService.getUserDetails(Number(localStorage.getItem('userId')));
+        //console.log('Poluchaem danni', user);
+        if (user.isAdmin) {
+            localStorage.setItem('isAdmin', '1'.toString());
+            //console.log('Администратор:', user.isAdmin);
+        } else {
+            localStorage.removeItem('isAdmin');
+            //console.log('Не администратор:', user.isAdmin);
         }
     }
 }

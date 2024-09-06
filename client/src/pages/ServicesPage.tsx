@@ -1,6 +1,7 @@
 // src/pages/Services.tsx
 import React, { useState } from 'react';
 import styles from '../styles/Services.module.css';
+import { useNavigate } from 'react-router-dom';
 
 interface Service {
     name: string;
@@ -98,6 +99,11 @@ const Services: React.FC = () => {
         setActiveCategoryIndex(index);
     };
 
+    const navigate = useNavigate();
+    const handleBookButtonClick = () => {
+        navigate('/dashboard'); // Замените '/dashboard' на путь к вашей странице
+    };
+
     const selectedCategory = categories[activeCategoryIndex];
 
     return (
@@ -120,7 +126,7 @@ const Services: React.FC = () => {
                         <h3>{service.name}</h3>
                         <p><strong>Описание:</strong> {service.description}</p>
                         <p><strong>Стоимость:</strong> {service.cost}</p>
-                        <button className={styles.bookButton}>Записаться</button>
+                        <button className={styles.bookButton} onClick={handleBookButtonClick}>Записаться</button>
                     </div>
                 ))}
             </div>

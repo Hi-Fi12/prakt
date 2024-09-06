@@ -25,22 +25,22 @@ const Home: React.FC = () => {
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Наши Услуги</h2>
                 <ul className={styles.list}>
-                    <li className={styles.listItem}>Терапевтическое лечение</li>
-                    <li className={styles.listItem}>Хирургия</li>
-                    <li className={styles.listItem}>Ортопедия</li>
-                    <li className={styles.listItem}>Имплантация зубов</li>
-                    <li className={styles.listItem}>Косметическая стоматология</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/services'} style={{ cursor: 'pointer' }}>Терапевтическое лечение</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/services'} style={{ cursor: 'pointer' }}>Хирургия</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/services'} style={{ cursor: 'pointer' }}>Ортопедия</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/services'} style={{ cursor: 'pointer' }}>Имплантация зубов</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/services'} style={{ cursor: 'pointer' }}>Косметическая стоматология</li>
                 </ul>
             </section>
 
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Наши Специалисты</h2>
                 <ul className={styles.list}>
-                    <li className={styles.listItem}>Доктор Иванов — Терапевт</li>
-                    <li className={styles.listItem}>Доктор Петров — Хирург</li>
-                    <li className={styles.listItem}>Доктор Сидоров — Ортопед</li>
-                    <li className={styles.listItem}>Доктор Смирнова — Имплантолог</li>
-                    <li className={styles.listItem}>Доктор Кузнецова — Косметолог</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/specialists'} style={{ cursor: 'pointer' }}>Доктор Иванов — Терапевт</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/specialists'} style={{ cursor: 'pointer' }}>Доктор Петров — Хирург</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/specialists'} style={{ cursor: 'pointer' }}>Доктор Сидоров — Ортопед</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/specialists'} style={{ cursor: 'pointer' }}>Доктор Смирнова — Имплантолог</li>
+                    <li className={styles.listItem} onClick={() => window.location.href = '/specialists'} style={{ cursor: 'pointer' }}>Доктор Кузнецова — Косметолог</li>
                 </ul>
             </section>
 

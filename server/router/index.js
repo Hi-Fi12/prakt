@@ -23,8 +23,16 @@ router.get('/doctors', doctorController.getDoctors);
 router.get('/appointments/by-doctor-and-date', AppointmentController.getAppointmentsByDoctorAndDate);
 router.get('/appointments/:id', AppointmentController.getAllById); // Убедитесь, что метод getAll существует в AppointmentController
 router.get('/users/:id', userController.getUserDetails);
+router.get('/doctors/:id', doctorController.getDoctorById);
+router.get('/all_users', userController.getAllUsers);
+
+router.get('/all_appointments', AppointmentController.getAllAppointments);
+
 router.put('/users/:id', userController.updateUserDetails); // Метод PUT для обновления данных
+router.put('/newdoctor/', doctorController.create); // Метод PUT для обновления данных
+
+
 router.get('/users/:id', userController.getUserById);
 router.delete('/appointments/:id', AppointmentController.delete);
-
+router.delete('/doctor/:id', doctorController.delete);
 module.exports = router;

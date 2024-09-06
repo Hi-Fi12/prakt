@@ -25,7 +25,7 @@ app.use((err, req, res, next) => {
 
 const start = async () => {
     try {
-        console.log(`Attempting to start server on port ${PORT}`);
+        //console.log(`Attempting to start server on port ${PORT}`);
         app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
     } catch (e) {
         console.error('Error starting server:', e);

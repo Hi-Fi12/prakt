@@ -105,7 +105,7 @@ class UserService{
             //console.log(`Поиск пользователя с ID: ${userId}`); // Логируем ID
             const user = await UserModel.findByPk(userId);
             if (!user) {
-                //console.log(`Пользователь с ID ${userId} не найден`); // Логируем отсутствие пользователя
+                console.log(`Пользователь с ID ${userId} не найден`); // Логируем отсутствие пользователя
                 throw ApiError.NotFound('Пользователь не найден');
             }
             return user;
@@ -147,6 +147,15 @@ class UserService{
         }
     }
     
+    async  findAll() {
+        //console.log('Поиск всех пользователей');
+        const users = await UserModel.findAll();
+        const userData = users.map(user => user.dataValues);
+
+        //console.log("Найденные пользователи:", userData);
+        //console.log('Найденные пользователи:', users);
+        return userData;
+    }
 
     
 }

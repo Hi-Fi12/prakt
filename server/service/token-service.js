@@ -7,7 +7,7 @@ class TokenService{
         const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn:'30m'});
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn:'30d'});
 
-        console.log("Smotri tuta",accessToken, refreshToken);
+        //console.log("Smotri tuta",accessToken, refreshToken);
 
         return{
             accessToken,

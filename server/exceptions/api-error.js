@@ -24,7 +24,4 @@ module.exports = class ApiError extends Error {
         return new ApiError(404, message);
     }
 
-    static InternalServerError(message) {
-        return new ApiError(500, message);
-    }
 }

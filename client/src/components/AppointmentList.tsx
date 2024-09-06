@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AppointmentService from '../services/AppointmentService';
 import { IAppointment } from '../models/IAppointment';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import DoctorService from '../services/DoctorService';
 
 const AppointmentList: React.FC = () => {
     const [appointments, setAppointments] = useState<IAppointment[]>([]);
@@ -10,71 +12,85 @@ const AppointmentList: React.FC = () => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await AppointmentService.getAppointmentsById(Number(localStorage.getItem('userId')));
-                console.log('Appointments data:', response.data);
-                const appointmentsData = Array.isArray(response.data) ? response.data : [response.data]; // Преобразование в массив
-                
+                const userId = Number(localStorage.getItem('userId'));
+                const response = await AppointmentService.getAppointmentsById(userId);
+                const appointmentsData = Array.isArray(response.data) ? response.data : [response.data];
+                const newData = appointmentsData[0]?.data || [];
+                const message = appointmentsData[0]?.message;
 
-
-                const message = appointmentsData[0]?.message; // Получение сообщения из appointmentsData
-
-            if (message === 'Записи не найдены') {
-                setAppointments([]); // Устанавливаем пустой массив
-                console.log('No appointments found');
-            } else {
-                setAppointments(appointmentsData[0]?.data || []); // Устанавливаем данные или пустой массив
-                console.log('Appointments appointmentsData:', appointmentsData[0]?.data);
-                
-            }
+                if (message === 'Записи не найдены') {
+                    setAppointments([]);
+                } else {
+                    const filteredAppointments = newData.filter((appointment: IAppointment) => appointment.patient_id === userId);
+                    const updatedAppointments = await Promise.all(
+                        filteredAppointments.map(async (appointment: IAppointment) => {
+                            const newDoctorId = await identifiedDoctor(appointment.doctorId);
+                            return {
+                                ...appointment,
+                                doctorId: newDoctorId
+                            };
+                        })
+                    );
+                    setAppointments(updatedAppointments);
+                }
             } catch (err) {
                 setError('Ошибка при загрузке записей. Попробуйте позже.');
-                console.error(err);
             } finally {
                 setLoading(false);
             }
         };
 
-
-
         fetchAppointments();
     }, []);
 
+    const identifiedDoctor = async (oldDoctorId: number) => {
+        try {
+            const response = await DoctorService.getDoctorById(oldDoctorId);
+            // Убедитесь, что response.data - это массив, и получите первый элемент
+            const doctors = response.data;
+            const doctor = Array.isArray(doctors) ? doctors[0] : doctors; // Если это массив, берём первый элемент
+            return doctor.name; // Предполагается, что `doctor` имеет поле `id`
+        } catch (err) {
+            console.error('Ошибка при получении информации о докторе:', err);
+            return oldDoctorId; // В случае ошибки возвращаем старый ID
+        }
+    };
+
     const handleDelete = async (appointmentId: number) => {
         try {
-            await AppointmentService.deleteAppointment(appointmentId); // Ensure this method exists in your service
+            await AppointmentService.deleteAppointment(appointmentId);
             setAppointments((prevAppointments) =>
                 prevAppointments.filter((appointment) => appointment.id !== appointmentId)
             );
         } catch (err) {
             setError('Ошибка при удалении записи. Попробуйте позже.');
-            console.error(err);
         }
     };
 
     if (loading) {
-        return <div>Загрузка...</div>;
+        return <div className="text-center mt-4">Загрузка...</div>;
     }
 
     if (error) {
-        return <div>Ошибка: {error}</div>;
+        return <div className="alert alert-danger mt-4">{error}</div>;
     }
 
     if (appointments.length === 0) {
-        return <div>Записей не найдено.</div>;
+        return <div className="alert alert-info mt-4">Записей не найдено.</div>;
     }
 
     return (
-        <div className="appointment-list">
-            <h3>Ваши записи</h3>
-            <ul>
+        <div className="container mt-4">
+            <h3 className="mb-4">Ваши записи</h3>
+            <ul className="list-group">
                 {appointments.map((appointment) => (
-                    <li key={appointment.id} className="appointment-item">
+                    <li key={appointment.id} className="list-group-item d-flex justify-content-between align-items-center">
                         <div className="appointment-details">
                             <p><strong>Дата:</strong> {appointment.date}</p>
                             <p><strong>Время:</strong> {appointment.time}</p>
-                            <p><strong>ID Доктора:</strong> {appointment.doctorId}</p>
+                            <p><strong>Имя Доктора:</strong> {appointment.doctorId}</p>
                         </div>
-                        <button onClick={() => handleDelete(appointment.id)}>Удалить</button>
+                        <button className="btn btn-danger" onClick={() => handleDelete(appointment.id)}>Удалить</button>
                     </li>
                 ))}
             </ul>

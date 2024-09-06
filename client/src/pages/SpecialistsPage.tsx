@@ -19,7 +19,7 @@ const doctors: Doctor[] = [
         education: 'Московский государственный медико-стоматологический университет',
         experience: '10 лет',
         specialization: 'Диагностика и лечение заболеваний зубов и десен',
-        photo: '/images/ivanov.jpg', // Путь к фото
+        photo: 'https://via.placeholder.com/300', // Путь к фото
     },
     {
         fullName: 'Петров Петр Петрович',
@@ -27,7 +27,7 @@ const doctors: Doctor[] = [
         education: 'Санкт-Петербургская государственная медицинская академия',
         experience: '15 лет',
         specialization: 'Хирургическое лечение сложных заболеваний полости рта',
-        photo: '/images/petrov.jpg',
+        photo: 'https://via.placeholder.com/300',
     },
     {
         fullName: 'Сидоров Сергей Сергеевич',
@@ -35,7 +35,7 @@ const doctors: Doctor[] = [
         education: 'Казанский государственный медицинский университет',
         experience: '12 лет',
         specialization: 'Установка протезов и коррекция зубного ряда',
-        photo: '/images/sidorov.jpg',
+        photo: 'https://via.placeholder.com/300',
     },
     {
         fullName: 'Смирнова Анна Александровна',
@@ -43,7 +43,7 @@ const doctors: Doctor[] = [
         education: 'Новосибирский государственный медицинский университет',
         experience: '8 лет',
         specialization: 'Установка зубных имплантатов и восстановление утраченных зубов',
-        photo: '/images/smirnova.jpg',
+        photo: 'https://via.placeholder.com/300',
     },
     {
         fullName: 'Кузнецова Мария Викторовна',
@@ -51,7 +51,7 @@ const doctors: Doctor[] = [
         education: 'Уральский государственный медицинский университет',
         experience: '9 лет',
         specialization: 'Эстетическая стоматология и коррекция улыбки',
-        photo: '/images/kuznetsova.jpg',
+        photo: 'https://via.placeholder.com/300',
     },
 ];
 

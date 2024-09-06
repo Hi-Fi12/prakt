@@ -106,7 +106,7 @@ class UserController{
             return res.json(userDto);
         } catch (e) {
             // Логируем ошибку
-            console.error('Контроллер Ошибка при обновлении данных пользователя:', e);
+            //console.error('Контроллер Ошибка при обновлении данных пользователя:', e);
             next(e);
         }
     }
@@ -122,10 +122,21 @@ class UserController{
             }
             return user;
         } catch (error) {
-            console.error('Ошибка в getUserById:', error);
+            //console.error('Ошибка в getUserById:', error);
             throw ApiError.InternalServerError('Ошибка сервера при получении пользователя');
         }
     }
-}
 
+    async getAllUsers(req, res, next) {
+        try {
+           // console.log('Получение списка пользователей');
+            const users = await userService.findAll();
+            //console.log('Список пользователей получен:', users);
+            return res.json(users)
+        } catch (error) {
+            console.error('Ошибка в getAllUsers:', error);
+            throw ApiError.InternalServerError('Ошибка сервера при получении списка пользователей');
+        }
+    }
+}
 module.exports = new UserController();

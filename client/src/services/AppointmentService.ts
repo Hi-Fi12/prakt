@@ -8,6 +8,17 @@ function isAxiosError(error: unknown): error is AxiosError {
 }
 
 export default class AppointmentService {
+    static async getAllAppointments(): Promise<IAppointment[]> {
+        try {
+            const response = await $api.get<IAppointment[]>('all_appointments');
+            //console.log("123",response.data);
+            return response.data;
+            
+        } catch (error) {
+            console.error('Ошибка при получении записей:', error);
+            throw new Error('Не удалось получить записи.');
+        }
+    }
     static async getAppointments(): Promise<AxiosResponse<IAppointment[]>> {
         try {
             return await $api.get<IAppointment[]>('/appointments');
@@ -41,11 +52,11 @@ export default class AppointmentService {
         patient_id: number
     ): Promise<AxiosResponse<IAppointment>> {
         try {
-            console.log('Создание записи:');
-            console.log('doctorId:', doctorId);
-            console.log('date:', date);
-            console.log('time:', time);
-            console.log('patient_id:', patient_id);
+            //console.log('Создание записи:');
+            //console.log('doctorId:', doctorId);
+            //console.log('date:', date);
+            //console.log('time:', time);
+            //console.log('patient_id:', patient_id);
             
             const response = await $api.post<IAppointment>('/appointments', {
                 doctorId,
@@ -54,8 +65,8 @@ export default class AppointmentService {
                 patient_id
             });
             
-            console.log('Запись успешно создана:');
-            console.log('Response:', response.data);
+            //console.log('Запись успешно создана:');
+            //console.log('Response:', response.data);
             
             return response;
         } catch (error: unknown) {
@@ -75,7 +86,7 @@ export default class AppointmentService {
     }
     static async getAppointmentsByDoctorAndDate(doctorId: number, date: string): Promise<AxiosResponse<IAppointment[]>> {        
         try {
-            console.log(`Отправка запроса на получение записей для доктора с ID: ${doctorId} на дату: ${date}`);
+            //console.log(`Отправка запроса на получение записей для доктора с ID: ${doctorId} на дату: ${date}`);
             
             const response = await $api.get<IAppointment[]>('/appointments/by-doctor-and-date', {
                 params: {
@@ -84,7 +95,7 @@ export default class AppointmentService {
                 },
             });
             
-            console.log('Успешно получены данные о записях:', response.data);
+            //console.log('Успешно получены данные о записях:', response.data);
             return response;
         } catch (error: unknown) {
             console.error('Ошибка при получении записей по дате и врачу:', error);
@@ -99,7 +110,7 @@ export default class AppointmentService {
     static async deleteAppointment(id: number): Promise<void> {
         try {
             await $api.delete(`/appointments/${id}`);
-            console.log(`Запись с ID: ${id} успешно удалена`);
+            //console.log(`Запись с ID: ${id} успешно удалена`);
         } catch (error: unknown) {
             console.error('Ошибка при удалении записи:', error);
             if (isAxiosError(error)) {

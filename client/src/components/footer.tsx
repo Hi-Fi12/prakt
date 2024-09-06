@@ -25,15 +25,15 @@ const Footer: React.FC = () => {
                 <div className={styles.column}>
                     <h3>Социальные сети</h3>
                     <ul className={styles.socialLinks}>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Telegram</a></li>
+                        <li><a href="#">Discord</a></li>
                         <li><a href="#">ВКонтакте</a></li>
                     </ul>
                 </div>
                 <div className={styles.column}>
                     <h3>Рабочие часы</h3>
                     <p>Пн-Пт: 9:00 - 18:00</p>
-                    <p>Сб-Вс: 10:00 - 16:00</p>
+                    <p>Сб: 10:00 - 16:00</p>
                 </div>
             </div>
             <div className={styles.copyright}>
